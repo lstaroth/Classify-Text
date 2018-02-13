@@ -21,12 +21,19 @@ word2vec:
 
 **文件功能介绍**
 
+./  
+weibo.py：微博评论爬虫  
+readdata.py：为情感分析模型提供多种数据加载相关API  
+word2vec.py：为情感分析模型提供多种词向量的相关API  
+Cnn_Model.py：CNN文本分类模型图结构  
+cnn_train.py：CNN文本分类训练代码
+
+
+./data  
 pos.txt：正面评价数据集  
 neg.txt：负面评价数据集  
-weibo.py：微博评论爬虫  
-readdata.py：为情感分析模型提供多种数据加载相关API
-
-
+embedding_64.bin：训练好的词向量模型
+training_params.pickle：存着训练时的类别数量和句子允许的最长单词量
 
 
 **推荐运行环境**  

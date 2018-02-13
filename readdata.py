@@ -13,6 +13,7 @@ def save(content,path):
     f=open(path,'wb')
     pickle.dump(content,f)
     f.close()
+    print("file has been saved")
 
 
 def clean_str(string):
@@ -79,6 +80,3 @@ def get_all_data_from_file(positive_file_path,negative_file_path):
     all_label_arrays=np.concatenate([positive_label_lists, negative_label_lists], 0)  #标签为array类型
 
     return (all_sample_lists,all_label_arrays,max_sentences_length)
-
-
-#all_sample_lists,all_label_arrays,max_sentences_length=get_all_data_from_file("D:\\Emotion-on-Comments\\data\\pos.txt","D:\\Emotion-on-Comments\\data\\neg.txt")
