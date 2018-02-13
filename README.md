@@ -15,7 +15,7 @@ word2vec:
 项目使用的词向量：embedding_64.bin(1.5G)  
 训练语料：百度百科800w+条 20G+搜狐新闻400w+条 12G+小说：90G左右  
 模型参数：window=5 min_count=5 size=64  
-下载链接：[百度网盘链接](https://pan.baidu.com/s/1o7MWrnc) 密码:wzqv  
+下载链接：[百度网盘链接](https://pan.baidu.com/s/1o7MWrnc)      密码:wzqv  
 原博主主页：[新浪微博](https://weibo.com/u/6131343391?is_all=1)  
 
 
