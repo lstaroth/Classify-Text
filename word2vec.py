@@ -9,7 +9,7 @@ import numpy as np
 
 def get_embedding_vector(sentences):
     print("loading word2vec model now...........")
-    model=gensim.models.KeyedVectors.load_word2vec_format("D:\\Emotion-on-Comments\\data\\embedding_64.bin",binary=True)
+    model=gensim.models.KeyedVectors.load_word2vec_format("D:\\Emotion_on_Comments\\data\\embedding_64.bin",binary=True)
     print("loading word2vec finished")
     all_sample_vector_lists=[]
     padding_embedding=np.array([0] * 64,dtype=np.float32)
