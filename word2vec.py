@@ -24,10 +24,3 @@ def get_embedding_vector(sentences):
         all_sample_vector_lists.append(sentence_vector)
     print("transform word to vector finished")
     return all_sample_vector_lists
-
-'''
-get_embedding_vector([
-    ["我","爱","你"],
-    ["你","<PADDING>","<PADDING>"]
-])
-'''

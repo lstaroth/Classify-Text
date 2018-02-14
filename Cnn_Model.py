@@ -1,5 +1,4 @@
 import tensorflow as tf
-import numpy as np
 
 
 class TextCNN(object):
@@ -51,27 +50,30 @@ class TextCNN(object):
 
 
             num_filters_total = num_filters * len(filter_sizes)
-            self.h_pooled = tf.concat(pooled_outputs, 3)
+            self.h_pooled=tf.concat(pooled_outputs, 3)
             self.h_pooled_flat=tf.reshape(self.h_pooled,[-1,num_filters_total])
 
 
             #添加dropout层
-            self.h_drop = tf.nn.dropout(self.h_pool_flat, self.dropout_keep_prob)
+            self.h_drop=tf.nn.dropout(self.h_pooled_flat, self.dropout_keep_prob)
 
 
             #添加分类层
             w2=tf.Variable(tf.truncated_normal([num_filters_total,num_classes],stddev=0.1),name="weight2")
-            b2=tf.Variable(tf.constant(0.1,shape=[num_classes], stddev=0.1), name="bias2")
+            b2=tf.Variable(tf.constant(0.1,shape=[num_classes]), name="bias2")
             l2_loss += tf.nn.l2_loss(w2)
             l2_loss += tf.nn.l2_loss(b2)
-            self.scores=tf.nn.xw_plus_b(self.h_drop,w2,b2,name="scores")
-            self.predictions=tf.argmax(self.scores,1,name="predictions")
+            self.result=tf.matmul(self.h_drop,w2)+b2
+            self.predictions=tf.argmax(self.result,1,name="predictions")
 
 
             #计算损失
-            losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.scores, labels=self.input_y)
+            losses=tf.nn.softmax_cross_entropy_with_logits(logits=self.result, labels=self.input_y)
             self.loss=tf.reduce_mean(losses)+l2_reg_lambda*l2_loss
 
             #计算正确率
-            correct_predictions = tf.equal(self.predictions, tf.argmax(self.input_y, 1))
-            self.accuracy = tf.reduce_mean(tf.cast(correct_predictions, "float"), name="accuracy")
+            correct_predictions=tf.equal(self.predictions, tf.argmax(self.input_y, 1))
+            self.accuracy=tf.reduce_mean(tf.cast(correct_predictions, "float"), name="accuracy")
+
+            #训练操作
+            self.train_op=tf.train.AdamOptimizer(1e-4).minimize(self.loss)

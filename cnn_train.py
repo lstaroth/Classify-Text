@@ -9,6 +9,7 @@ import tensorflow as tf
 
 #文件路径
 current_path=os.path.abspath(os.curdir)
+data_path="./data"
 positive_file_path="./data//pos.txt"
 negative_file_path="./data//neg.txt"
 embedding_model_path="./data//embedding_64.bin"
@@ -62,7 +63,7 @@ print("Train/Test split: {:d}/{:d}".format(len(train_label_arrays), len(test_lab
 with tf.Graph().as_default():
     sess=tf.Session()
     with sess.as_default():
-        CnnModel=Cnn_Model.TextCNN(
+        cnn=Cnn_Model.TextCNN(
             sequence_length=train_sample_arrays.shape[1],
             num_classes=train_label_arrays.shape[1],
             embedding_size=embedding_size,
@@ -70,3 +71,52 @@ with tf.Graph().as_default():
             num_filters=num_filters,
             l2_reg_lambda=l2_reg_lambda
         )
+
+        #初始化参数
+        sess.run(tf.global_variables_initializer())
+        saver=tf.train.Saver()
+
+        #定义训练函数
+        def train_step(x_batch,y_batch):
+            feed_dict={
+                cnn.input_x:x_batch,
+                cnn.input_y:y_batch,
+                cnn.dropout_keep_prob:dropout_keep_prob
+            }
+            loss,accuracy=sess.run(
+                [cnn.loss,cnn.accuracy],
+                feed_dict=feed_dict
+            )
+            return (loss,accuracy)
+
+        #定义测试函数
+        def test_step(x_batch,y_batch):
+            feed_dict={
+                cnn.input_x:x_batch,
+                cnn.input_y:y_batch,
+                cnn.dropout_keep_prob:1.0
+            }
+            loss,accuracy=sess.run(
+                [cnn.loss,cnn.accuracy],
+                feed_dict=feed_dict
+            )
+            return (loss,accuracy)
+
+        #生成批数据
+        batches=readdata.batch_iter(
+            list(zip(train_sample_arrays, train_label_arrays)),batch_size,num_epochs)
+
+
+        #正式开始训练啦
+        step_num=0
+        for batch in batches:
+            step_num += 1
+            x_batch,y_batch=zip(*batch)
+            loss, accuracy=train_step(x_batch,y_batch)
+            if step_num % 100 == 0:
+                print("For train_samples: step %d, loss %g, accuracy %g" % (step_num,loss,accuracy))
+
+        loss, accuracy=test_step(test_sample_arrays,test_label_arrays)
+        print("Testing loss: %g,Testing accuracy: %g",(loss,accuracy))
+
+        saver.save(sess,data_path)

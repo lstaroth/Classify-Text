@@ -80,3 +80,23 @@ def get_all_data_from_file(positive_file_path,negative_file_path):
     all_label_arrays=np.concatenate([positive_label_lists, negative_label_lists], 0)  #标签为array类型
 
     return (all_sample_lists,all_label_arrays,max_sentences_length)
+
+
+def batch_iter(data, batch_size, num_epochs, shuffle=True):
+    '''
+    生成batches迭代对象
+    '''
+    data = np.array(data)
+    data_size = len(data)
+    num_batches_per_epoch = int((data_size - 1) / batch_size) + 1
+    for epoch in range(num_epochs):
+        if shuffle:
+            #顺序打乱
+            shuffle_indices = np.random.permutation(np.arange(data_size))
+            shuffled_data = data[shuffle_indices]
+        else:
+            shuffled_data = data
+        for batch_num in range(num_batches_per_epoch):
+            start_idx = batch_num * batch_size
+            end_idx = min((batch_num + 1) * batch_size, data_size)
+            yield shuffled_data[start_idx : end_idx]

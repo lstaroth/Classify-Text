@@ -33,7 +33,8 @@ cnn_train.py：CNN文本分类训练代码
 pos.txt：正面评价数据集  
 neg.txt：负面评价数据集  
 embedding_64.bin：训练好的词向量模型
-training_params.pickle：存着训练时的类别数量和句子允许的最长单词量
+training_params.pickle：存着训练时的类别数量和句子允许的最长单词量  
+模型保存参数文件  
 
 
 **推荐运行环境**  
