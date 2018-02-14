@@ -23,15 +23,12 @@ num_labels=2
 embedding_size=64
 filter_sizes=[3,4,5]
 num_filters=128
-dropout_keep_prob=0.5
+dropout_keep_prob=0.8
 l2_reg_lambda=0.0
 batch_size=64
 num_epochs=200
 evaluate_every=100
 checkpoint_every=100
-num_checkpoints=5
-allow_soft_placement=True
-log_device_placement=False
 
 
 #加载数据
@@ -47,7 +44,7 @@ readdata.save(params,train_data_path)
 #打乱样本顺序
 np.random.seed(10)
 random_index=np.random.permutation(np.arange(len(all_label_arrays)))
-random_sample_lists=all_sample_lists[random_index]
+random_sample_lists=all_sample_arrays[random_index]
 random_label_lists=all_label_arrays[random_index]
 
 #按比例抽取测试样本
@@ -83,8 +80,8 @@ with tf.Graph().as_default():
                 cnn.input_y:y_batch,
                 cnn.dropout_keep_prob:dropout_keep_prob
             }
-            loss,accuracy=sess.run(
-                [cnn.loss,cnn.accuracy],
+            loss,accuracy,_=sess.run(
+                [cnn.loss,cnn.accuracy,cnn.train_op],
                 feed_dict=feed_dict
             )
             return (loss,accuracy)
@@ -117,6 +114,6 @@ with tf.Graph().as_default():
                 print("For train_samples: step %d, loss %g, accuracy %g" % (step_num,loss,accuracy))
 
         loss, accuracy=test_step(test_sample_arrays,test_label_arrays)
-        print("Testing loss: %g,Testing accuracy: %g",(loss,accuracy))
+        print("Testing loss: %g,Testing accuracy: %g" % (loss,accuracy))
 
-        saver.save(sess,data_path)
+        saver.save(sess,"data/text_model")

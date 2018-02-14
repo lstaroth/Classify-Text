@@ -1,7 +1,3 @@
-import os
-import sys
-import logging
-import time
 import gensim
 import numpy as np
 
