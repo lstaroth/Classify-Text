@@ -13,10 +13,9 @@ lstm_for_emotion_classify
 
 word2vec:  
 项目使用的词向量：embedding_64.bin(1.5G)  
-训练语料：百度百科800w+条 20G+搜狐新闻400w+条 12G+小说：90G左右  
+训练语料：百度百科800w条 20G+搜狐新闻400w条 12G+小说：90G左右  
 模型参数：window=5 min_count=5 size=64  
-下载链接：[百度网盘链接](https://pan.baidu.com/s/1o7MWrnc)      密码:wzqv  
-原博主主页：[新浪微博](https://weibo.com/u/6131343391?is_all=1)  
+下载链接：[百度网盘链接](https://pan.baidu.com/s/1o7MWrnc)      密码:wzqv
 
 
 **文件功能介绍**
@@ -27,11 +26,13 @@ readdata.py：为情感分析模型提供多种数据加载相关API
 word2vec.py：为情感分析模型提供多种词向量的相关API  
 Cnn_Model.py：CNN文本分类模型图结构  
 cnn_train.py：CNN文本分类训练代码
+cnn_test.py： CNN文本分类测试代码
 
 
 ./data  
 pos.txt：正面评价数据集  
 neg.txt：负面评价数据集  
+test.txt：自己放样本测试  
 embedding_64.bin：训练好的词向量模型
 training_params.pickle：存着训练时的类别数量和句子允许的最长单词量  
 模型保存参数文件  
