@@ -3,12 +3,12 @@ import numpy as np
 
 
 
-def get_embedding_vector(sentences):
+def get_embedding_vector(sentences,embedding_model_path):
     print("loading word2vec model now...........")
-    model=gensim.models.KeyedVectors.load_word2vec_format("D:\\Emotion_on_Comments\\data\\embedding_64.bin",binary=True)
+    model=gensim.models.KeyedVectors.load_word2vec_format(embedding_model_path,binary=True)
     print("loading word2vec finished")
     all_sample_vector_lists=[]
-    padding_embedding=np.array([0] * 64,dtype=np.float32)
+    padding_embedding=np.array([0] * model.vector_size,dtype=np.float32)
     print("transform word to vector now.......")
     for sentence in sentences:
         sentence_vector = []

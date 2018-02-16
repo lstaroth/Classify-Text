@@ -100,3 +100,9 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
             start_idx = batch_num * batch_size
             end_idx = min((batch_num + 1) * batch_size, data_size)
             yield shuffled_data[start_idx : end_idx]
+
+
+def loadDict(train_data_path):
+    f=open(train_data_path,'rb')
+    params=pickle.load(f)
+    return params

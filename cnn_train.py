@@ -27,13 +27,11 @@ dropout_keep_prob=0.8
 l2_reg_lambda=0.0
 batch_size=64
 num_epochs=200
-evaluate_every=100
-checkpoint_every=100
 
 
 #加载数据
 all_sample_lists,all_label_arrays,max_sentences_length=readdata.get_all_data_from_file(positive_file_path,negative_file_path)
-all_sample_arrays=np.array(word2vec.get_embedding_vector(all_sample_lists))
+all_sample_arrays=np.array(word2vec.get_embedding_vector(all_sample_lists,embedding_model_path))
 print("sample.shape = {}".format(all_sample_arrays.shape))
 print("label.shape = {}".format(all_label_arrays.shape))
 
