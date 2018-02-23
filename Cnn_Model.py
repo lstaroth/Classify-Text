@@ -2,20 +2,23 @@ import tensorflow as tf
 
 
 class TextCNN(object):
-    def __init__(self, sequence_length, num_classes,embedding_size, filter_sizes, num_filters, l2_reg_lambda=0.0):
+    def __init__(self, config):
+        sequence_length = config.max_sentences_length
+        num_classes = config.num_labels
+        embedding_size = config.embedding_size
+        filter_sizes = config.filter_sizes
+        num_filters = config.num_filters
+        l2_reg_lambda = config.l2_reg_lambda
+        l2_loss = tf.constant(0.0)
+        pooled_outputs = []
+
+
         self.input_x=tf.placeholder(tf.float32,[None,sequence_length,embedding_size],name="input_x")
         self.input_y=tf.placeholder(tf.float32,[None,num_classes],name="input_y")
         self.dropout_keep_prob=tf.placeholder(tf.float32,name="dropout_rate")
+        self.learning_rate=tf.placeholder(tf.float32,name="lr")
 
 
-        #l2损失
-        l2_loss = tf.constant(0.0)
-
-
-        pooled_outputs=[]
-
-
-        #扩展一个Channel维度
         self.input_x_expended=tf.expand_dims(self.input_x,-1)
 
 
@@ -51,7 +54,6 @@ class TextCNN(object):
                 )
                 pooled_outputs.append(pooled)
 
-
         num_filters_total = num_filters * len(filter_sizes)
         self.h_pooled=tf.concat(pooled_outputs, 3)
         self.h_pooled_flat=tf.reshape(self.h_pooled,[-1,num_filters_total])
@@ -64,26 +66,34 @@ class TextCNN(object):
 
         #添加分类层
         with tf.name_scope("output"):
-            W = tf.get_variable(
-                "W",
+            self.Weight = tf.get_variable(
+                "Weight",
                 shape=[num_filters_total, num_classes],
                 initializer=tf.contrib.layers.xavier_initializer())
-            b = tf.Variable(tf.constant(0.1, shape=[num_classes], name="b"))
-            l2_loss += tf.nn.l2_loss(W)
-            l2_loss += tf.nn.l2_loss(b)
-            self.result=tf.matmul(self.h_drop,W)+b
+            self.bias = tf.Variable(tf.constant(0.1, shape=[num_classes], name="bias"))
+            l2_loss += tf.nn.l2_loss(self.Weight)
+            l2_loss += tf.nn.l2_loss(self.bias)
+            self.result=tf.matmul(self.h_drop,self.Weight)+self.bias
             self.predictions=tf.argmax(self.result,1,name="predictions")
+            tf.summary.histogram("weight",self.Weight)
+            tf.summary.histogram("bias",self.bias)
 
 
                 #计算损失
         with tf.name_scope("loss"):
             losses=tf.nn.softmax_cross_entropy_with_logits(logits=self.result, labels=self.input_y)
             self.loss=tf.reduce_mean(losses)+l2_reg_lambda*l2_loss
+            tf.summary.scalar("loss",self.loss)
 
         #计算正确率
         with tf.name_scope("accuracy"):
             correct_predictions=tf.equal(self.predictions, tf.argmax(self.input_y, 1))
             self.accuracy=tf.reduce_mean(tf.cast(correct_predictions, "float"), name="accuracy")
+            tf.summary.scalar("accuracy",self.accuracy)
 
         #训练操作
-        self.train_op=tf.train.AdamOptimizer(1e-4).minimize(self.loss)
+        with tf.name_scope("train_operation"):
+            self.train_op=tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+
+        with tf.name_scope("summary"):
+            self.merged=tf.summary.merge_all()
