@@ -48,7 +48,7 @@ embedding_64.bin：训练好的词向量模型
 
 
 ## 推荐运行环境
-python 3.6  
+python 3.6  
 tensorflow-gpu 1.4  
 gensim 3.3  
-Ubuntu 64bit / windows10 64bit  
+Ubuntu 64 Bit / windows10 64 Bit  
