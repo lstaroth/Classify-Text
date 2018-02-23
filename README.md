@@ -4,12 +4,12 @@
 ## 项目简介
 学习cnn，rnn在实际环境下的应用，提升实践能力，了解深度学习在自然语言处理方面的进展。  
 
-## cnn_for_emotion_classify
+## cnn_for_text_classify
 具备较强的自动关键词提取能力，在酒店评论测试集上达到95%的准确率  
 采用l2正则和dropout来控制过拟合现象  
 4种卷积核使其能提取局部高效的短特征  
 
-## lstm_for_emotion_classify
+## lstm_for_text_classify
 具有较强的对长难句，反问句，阴阳怪气句的判断能力，在在酒店评论测试集上达到97%的准确率  
 采用双向LSTM网络  
 对输入数据进行dropout，模拟增大样本空间  
