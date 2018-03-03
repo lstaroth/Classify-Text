@@ -19,22 +19,23 @@ log_path="./summary//cnn"
 
 #模型超参
 class config():
-    test_sample_percentage=0.2
+    test_sample_percentage=0.01
     num_labels=2
     embedding_size=64
     filter_sizes=[2,3,4,5]
     num_filters=128
     dropout_keep_prob=0.5
     l2_reg_lambda=0.5
-    batch_size=64
-    num_epochs=100
+    batch_size=128
+    num_epochs=10
     max_sentences_length=0
     lr_rate=1e-3
 
 
 #加载数据
-all_sample_lists,all_label_arrays,max_sentences_length=readdata.get_all_data_from_file(positive_file_path,negative_file_path)
+all_sample_lists,all_label_arrays,max_sentences_length=readdata.get_all_data_from_file(positive_file_path,negative_file_path,force_len=40)
 all_sample_arrays=np.array(word2vec.get_embedding_vector(all_sample_lists,embedding_model_path))
+del all_sample_lists
 print("sample.shape = {}".format(all_sample_arrays.shape))
 print("label.shape = {}".format(all_label_arrays.shape))
 trainconfig=config()
@@ -52,19 +53,18 @@ readdata.save(params,train_data_path)
 np.random.seed(10)
 random_index=np.random.permutation(np.arange(len(all_label_arrays)))
 random_sample_arrays=all_sample_arrays[random_index]
+del all_sample_arrays
 random_label_arrays=all_label_arrays[random_index]
-
 #按比例抽取测试样本
 num_tests=int(trainconfig.test_sample_percentage*len(all_label_arrays))
+del all_label_arrays,random_index
 test_sample_arrays=random_sample_arrays[:num_tests]
-test_label_arrays=random_label_arrays[:num_tests]
 train_sample_arrays=random_sample_arrays[num_tests:]
+del random_sample_arrays
+test_label_arrays=random_label_arrays[:num_tests]
 train_label_arrays=random_label_arrays[num_tests:]
+del random_label_arrays
 print("Train/Test split: {:d}/{:d}".format(len(train_label_arrays), len(test_label_arrays)))
-
-del all_sample_arrays,all_label_arrays
-del random_index,random_sample_arrays,random_label_arrays
-
 
 #开始训练
 with tf.Graph().as_default():
@@ -118,16 +118,15 @@ with tf.Graph().as_default():
             step_num += 1
             x_batch,y_batch=zip(*batch)
             summary,loss, accuracy=train_step(x_batch,y_batch,config.lr_rate)
-            if step_num % 10 == 0:
-                train_writer.add_summary(summary,step_num)
-                print("For train_samples: step %d, loss %g, accuracy %g" % (step_num,loss,accuracy))
             if step_num % 100 == 0:
+                train_writer.add_summary(summary,step_num)
+                #print("For train_samples: step %d, loss %g, accuracy %g" % (step_num,loss,accuracy))
                 summary,loss, accuracy = test_step(test_sample_arrays, test_label_arrays)
-                print("Testing loss: %g,Testing accuracy: %g" % (loss, accuracy))
+                #print("Testing loss: %g,Testing accuracy: %g" % (loss, accuracy))
                 test_writer.add_summary(summary, step_num)
 
-        _,loss, accuracy = test_step(test_sample_arrays, test_label_arrays)
-        print("Testing loss: %g,Testing accuracy: %g" % (loss, accuracy))
+        #_,loss, accuracy = test_step(test_sample_arrays, test_label_arrays)
+        #print("Testing loss: %g,Testing accuracy: %g" % (loss, accuracy))
 
         saver.save(sess,"data/cnn/text_model")
         train_writer.close()

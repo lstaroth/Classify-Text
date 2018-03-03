@@ -57,7 +57,7 @@ def test_step(x_batch):
         cnn.dropout_keep_prob:1.0
         }
     predictions,scores=sess.run(
-        [cnn.predictions,cnn.result],
+        [cnn.predictions,cnn.softmax_result],
         feed_dict=feed_dict
         )
     return (predictions,scores)

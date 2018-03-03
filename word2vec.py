@@ -18,5 +18,8 @@ def get_embedding_vector(sentences,embedding_model_path):
             else:
                 sentence_vector.append(padding_embedding)
         all_sample_vector_lists.append(sentence_vector)
+        del sentence_vector
     print("transform word to vector finished")
+    del sentences
+    del model
     return all_sample_vector_lists
