@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2018/3/1 19:54
 # @Author  : 孑曦曦孑
-# @File    : visiter_weibo_login.py
+# @File    : visitor_weibo_login.py
 
 import requests
 import re
@@ -140,25 +140,24 @@ class visitor():
             wa="w"
         else:
             wa="a"
-        f1=open("weibo_comments.txt", wa,encoding='utf-8')
-        f2=open("weibo_points.txt",wa,encoding='utf-8')
+        f=open("weibo_comments.txt", wa,encoding='utf-8')
+        # f2=open("weibo_points.txt",wa,encoding='utf-8')
         for i in range(len(comments)):
             comment = comments[i].xpath("text()")
             comment = ",".join(comment[1:])[1:].strip()
-            print(comment)
+            point = points[i]
+            if point == "赞":
+                point = "0"
+            #点赞数为权重0.2
+            weights=int(0.2*int(point))
             #写入评论
             comment=comment+"\n"
-            f1.write(comment)
-            point = points[i]
-            if point=="赞":
-                point="0"
+            f.write(comment)
+            for i in range(weights):
+                f.write(comment)
             #写入点赞数
-            print(point)
-            point=point+"\n"
-            f2.write(point)
         print("已写入", page, "页")
-        f1.close()
-        f2.close()
+        f.close()
     # except :
     #     print("写入文件失败")
 
@@ -210,7 +209,14 @@ class visitor():
         print(page)
         self.catch_pictures(page, html)
 
-
+#模块调用
+def start(url=None):
+    if url==None:
+        print("请输入正确的url")
+        return
+    else:
+        spider=visitor(url)
+        spider.catch_comments()
 
 if __name__=="__main__":
     url="https://weibo.com/2387903701/G5bn7s5CS?type=comment"
