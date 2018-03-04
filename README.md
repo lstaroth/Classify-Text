@@ -31,21 +31,28 @@ weibo.py：微博评论爬虫
 readdata.py：为情感分析模型提供多种数据加载相关API  
 word2vec.py：为情感分析模型提供多种词向量的相关API  
 cnn_model.py：CNN文本分类模型图结构  
-cnn_train.py：CNN文本分类训练代码
-cnn_test.py： CNN文本分类测试代码
+cnn_train.py：CNN文本分类训练代码  
+cnn_test.py： CNN文本分类测试代码  
 lstm_model.py：lstm文本分类模型图结构  
-lstm_train.py：lstm文本分类训练代码
-lstm_test.py： lstm文本分类测试代码
-mixed_cnn_lstm_test.py:采用模型融合方式将cnn与lstm的结果进行融合投票绝对最终结果
+lstm_train.py：lstm文本分类训练代码  
+lstm_test.py： lstm文本分类测试代码  
+mixed_cnn_lstm_test.py:采用模型融合方式将cnn与lstm的结果进行融合投票绝对最终结果  
 
 ./data  
 pos.txt：正面评价数据集  
 neg.txt：负面评价数据集  
 test.txt：自己放样本测试  
 embedding_64.bin：训练好的词向量模型  
-/cnn:cnn模型训练完成的相关数据参数  
-/lstm：lstm模型训练完成的相关数据参数  
+---/cnn:cnn模型训练完成的相关数据参数  
+---/lstm：lstm模型训练完成的相关数据参数  
 
+./summary 
+---/cnn:cnn的log&图结构  
+-------/test:测试集上的log  
+-------/test:训练集上的log  
+---/lstm：lstm的log&图结构  
+-------/test:测试集上的log  
+-------/test:训练集上的log  
 
 ## 推荐运行环境
 python 3.6  
@@ -58,4 +65,5 @@ Ubuntu 64 Bit / windows10 64 Bit
 2.pos.txt、neg.txt、test.txt 文件一行为一条评论，长度不限，可以有英文和标点（反正都会去除的），不要词性标注信息  
 3.词向量模型一定要用我放的那个64维度的bin文件  
 4.模型代码在windows上测试过基本没bug，linux平台没测试过，不过肯定需要自行修改文件路径  
-5.测试集比率根据你的样本数量自行调整，太大容易造成显存不够导致失败
+5.测试集比率根据你的样本数量自行调整，太大容易造成显存不够导致失败  
+6.根据文件夹结构自行建立
