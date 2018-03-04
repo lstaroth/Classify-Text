@@ -77,6 +77,7 @@ class TextCNN(object):
             self.predictions=tf.argmax(self.result,1,name="predictions")
             tf.summary.histogram("weight",self.Weight)
             tf.summary.histogram("bias",self.bias)
+            self.softmax_result = tf.nn.softmax(self.result)
 
 
                 #计算损失

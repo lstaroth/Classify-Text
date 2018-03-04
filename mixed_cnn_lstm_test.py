@@ -89,7 +89,7 @@ with lstm_sess.as_default():
                 lstm.dropout_keep_prob:lstm_config.dropout_keep_prob
             }
             scores=lstm_sess.run(
-                [lstm.result],
+                [lstm.softmax_result],
                 feed_dict=feed_dict
             )
             return scores
@@ -109,7 +109,7 @@ with cnn_sess.as_default():
                 cnn.dropout_keep_prob:cnn_config.dropout_keep_prob
             }
             scores=cnn_sess.run(
-                [cnn.result],
+                [cnn.softmax_result],
                 feed_dict=feed_dict
             )
             return scores

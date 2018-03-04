@@ -60,7 +60,7 @@ def test_step(x_batch):
         lstm.dropout_keep_prob:testconfig.dropout_keep_prob
     }
     predictions,scores=sess.run(
-        [lstm.predictions,lstm.result],
+        [lstm.predictions,lstm.softmax_result],
         feed_dict=feed_dict
     )
     return (predictions,scores)
