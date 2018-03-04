@@ -16,7 +16,7 @@
 LSTM层与层之间进行dropout  
 对LSTM网络权重，偏置进行l2正则，抗过拟合  
 网络采用正交初始化，加快收敛速度，提升训练集上的正确率，大幅提升测试集上的正确率  
-采用Clipping Gradients，防止梯度爆炸，提升测试集上的正确率
+采用Clipping Gradients，防止梯度爆炸，提升测试集上的正确率  
 
 ## word2vec:
 项目使用的词向量：embedding_64.bin(1.5G)  
@@ -37,16 +37,18 @@ lstm_model.py：lstm文本分类模型图结构
 lstm_train.py：lstm文本分类训练代码  
 lstm_test.py： lstm文本分类测试代码  
 mixed_cnn_lstm_test.py:采用模型融合方式将cnn与lstm的结果进行融合投票绝对最终结果  
+visual.py：结果可视化  
+main.py：项目主文件，调用各文件API，自动提取，分析，显示  
 
 ./data  
-pos.txt：正面评价数据集  
-neg.txt：负面评价数据集  
-test.txt：自己放样本测试  
+happy.txt：开心评价  
+angry.txt：愤怒评价  
+unhappy：低落评价数据集   
 embedding_64.bin：训练好的词向量模型  
 ---/cnn:cnn模型训练完成的相关数据参数  
----/lstm：lstm模型训练完成的相关数据参数    
+---/lstm：lstm模型训练完成的相关数据参数  
 
-./summary 
+./summary  
 ---/cnn:cnn的log和图结构  
 -------/test:测试集上的log  
 -------/test:训练集上的log  
@@ -66,6 +68,4 @@ Ubuntu 64 Bit / windows10 64 Bit
 3.词向量模型一定要用我放的那个64维度的bin文件  
 4.模型代码在windows上测试过基本没bug，linux平台没测试过，不过肯定需要自行修改文件路径  
 5.测试集比率根据你的样本数量自行调整，太大容易造成显存不够导致失败  
-6.根据文件夹结构自行建立
-5.测试集比率根据你的样本数量自行调整，太大容易造成显存不够导致失败  
-6.根据上述自行建立文件夹结构
+6.根据文件夹结构自行建立  

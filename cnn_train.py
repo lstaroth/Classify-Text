@@ -10,8 +10,9 @@ import tensorflow as tf
 #文件路径
 current_path=os.path.abspath(os.curdir)
 data_path="./data"
-positive_file_path="./data//pos.txt"
-negative_file_path="./data//neg.txt"
+happy_file_path="./data//happy.txt"
+angry_file_path="./data//angry.txt"
+unhappy_file_path="./data//unhappy.txt"
 embedding_model_path="./data//embedding_64.bin"
 train_data_path="./data//cnn//training_params.pickle"
 log_path="./summary//cnn"
@@ -20,20 +21,20 @@ log_path="./summary//cnn"
 #模型超参
 class config():
     test_sample_percentage=0.01
-    num_labels=2
+    num_labels=3
     embedding_size=64
     filter_sizes=[2,3,4,5]
     num_filters=128
     dropout_keep_prob=0.5
     l2_reg_lambda=0.5
     batch_size=128
-    num_epochs=10
+    num_epochs=15
     max_sentences_length=0
     lr_rate=1e-3
 
 
 #加载数据
-all_sample_lists,all_label_arrays,max_sentences_length=readdata.get_all_data_from_file(positive_file_path,negative_file_path,force_len=40)
+all_sample_lists,all_label_arrays,max_sentences_length=readdata.get_all_data_from_file(happy_file_path,angry_file_path,unhappy_file_path,force_len=40)
 all_sample_arrays=np.array(word2vec.get_embedding_vector(all_sample_lists,embedding_model_path))
 del all_sample_lists
 print("sample.shape = {}".format(all_sample_arrays.shape))
