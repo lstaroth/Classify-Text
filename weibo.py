@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/3/1 19:54
-# @Author  : jiexixijie
-# @File    : webspider_weibo.py
+# @Author  : 孑曦曦孑
+# @File    : visiter_weibo_login.py
 
 import requests
 import re
 import json
 from lxml import etree
 import time
+import os
 
 # url="https://weibo.com/2447680824/G5nMd0MBJ?type=comment#_rnd1519906057635"
 #模拟游客登录获取cookies
@@ -66,7 +67,7 @@ class visitor():
         print("成功获取游客Cookies")
         return S.cookies,S.headers
 
-
+    #base62解码
     def base62(self,string):
         alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         base = len(alphabet)
@@ -92,9 +93,6 @@ class visitor():
         content=str(content).replace("\n"," ")
         print("爬取ing\n\t",content)
         # #获取异步加载url中的id
-        # pattern = re.compile(r'mid=\\\"(\d*)\\\"')
-        # id=pattern.search(response.text).group(1)
-        # return id
         pattern=re.compile(r"\d\/(.*)\?type")
         content=pattern.search(url).group(1)
         string1=str(self.base62(content[0]))
@@ -121,64 +119,112 @@ class visitor():
         # print(url)
         response=S.get(url)
         html=json.loads(response.text)["data"]["html"]
+        #如果两次相同表示结束了 -。-
         if past_html==html:
             print("爬取结束")
             # print(self.id)
             print("共",page,"页")
             return
-
+        #搜索评论
         text=etree.HTML(html)
-        comments=text.xpath('//div[@class="list_li S_line1 clearfix"]//div[@class="WB_text"]//text()')
+        #评论数-xpath
+        # comments=text.xpath('//div[@class="list_li S_line1 clearfix"]//div[@class="WB_text"]//text()')
+        comments = text.xpath('//div[@class="list_li S_line1 clearfix"]/*/div[@class="WB_text"]')
+        # 评论数
+        points = text.xpath('//div[@class="list_li S_line1 clearfix"]//*/span[@node-type="like_status"]/child::*[2]//text()')
+        #点赞数-xpath
+        # points
         pattern = re.compile(r'\：(.*)')
-        try:
-            if page==1:
-                wa="w"
-            else:
-                wa="a"
-            with open("weibo_comments.txt", wa) as f:
-                for comment in comments:
-                    comment = pattern.search(comment)
-                    try:
-                        comment=comment.group(1)
-                        if comment and comment!= "回复":
-                            comment=comment+"\n"
-                            f.write(comment)
-                            # print(comment)
-                            # self.word+=1
-                    except:
-                        pass
-            print("已写入", page, "页")
-            f.close()
-        except:
-            print("写入文件失败")
+        # try:
+        if page==1:
+            wa="w"
+        else:
+            wa="a"
+        f1=open("weibo_comments.txt", wa,encoding='utf-8')
+        f2=open("weibo_points.txt",wa,encoding='utf-8')
+        for i in range(len(comments)):
+            comment = comments[i].xpath("text()")
+            comment = ",".join(comment[1:])[1:].strip()
+            print(comment)
+            #写入评论
+            comment=comment+"\n"
+            f1.write(comment)
+            point = points[i]
+            if point=="赞":
+                point="0"
+            #写入点赞数
+            print(point)
+            point=point+"\n"
+            f2.write(point)
+        print("已写入", page, "页")
+        f1.close()
+        f2.close()
+    # except :
+    #     print("写入文件失败")
 
-        # pattern=r"下一页"
-        # new_url=re.search(pattern,html)
-        # # if new_url[-1]==str(page)[-1]:
-
-
-        # if not new_url:
-        #     # print("-.-,我被新浪发现了")
-        #     print("爬取结束")
-        #     print(self.word)
-        #     print(self.id)
-        #     print(page)
-        #     return
-        # if new_url:
         page+=1
-        # time.sleep(1)
         self.catch_comments(page,html)
+
+    #获取图片
+    def catch_pictures(self,page=1,past_html=None):
+        # 模拟异步加载
+        # https://weibo.com/aj/v6/comment/big?ajwvr=6&id=4213083327566698&filter=hot&page=1
+        path = "./weibo-pic"
+        if (page == 1):
+            print("开始爬取~")
+            #创建文件夹
+            if not os.path.exists(path):
+                os.makedirs(path)
+        S = requests.session()
+        S.cookies = self.cookies
+        S.headers = self.headers
+        url = "https://weibo.com/aj/v6/comment/big?ajwvr=6" \
+              + "&id=" + str(self.id) \
+              + "&filter=hot" \
+              + "&page=" + str(page)
+        response = S.get(url)
+        html = json.loads(response.text)["data"]["html"]
+        # 如果两次相同表示结束了 -。-
+        if past_html == html:
+            print("爬取结束")
+            # print(self.id)
+            print("共", page, "页")
+            return
+        # 搜索图片链接
+        text = etree.HTML(html)
+        ids = text.xpath('//li[@action-type="comment_media_img"]/attribute::action-data')
+        # 写入图片
+        try:
+            for id in ids:
+                id = id.split("&")
+                id = id[0][4:]
+                url = "https://wx3.sinaimg.cn/bmiddle/" + id + ".jpg"
+                filename = path + "/" + str(id) + ".jpg"
+                response = requests.get(url, stream=True)
+                with open(filename, "wb") as f:
+                    for chunk in response.iter_content(128):
+                        f.write(chunk)
+        except:
+            print("写入失败")
+        page += 1
+        print(page)
+        self.catch_pictures(page, html)
+
 
 
 if __name__=="__main__":
     url="https://weibo.com/2387903701/G5bn7s5CS?type=comment"
     url = input("输入需要爬取的微博url:\n")
     spider=visitor(url)
-    # print("输入需要爬取的微博url")
     spider.catch_comments()
-
+    # spider.catch_pictures()
 #https://weibo.com/1840483562/G48Ajgfhq?type=comment
 #https://weibo.com/aj/v6/comment/big?ajwvr=6&id=4209863153871988&filter=hot&page=1
 
 #https://weibo.com/2387903701/G5bn7s5CS?type=comment
 #https://weibo.com/aj/v6/comment/big?ajwvr=6&id=4212353576694814&filter=hot&page=12
+
+
+#------------------
+#      ~。~   nice
+#------------------
