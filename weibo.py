@@ -18,9 +18,10 @@ class visitor():
         try:
             self.cookies,self.headers=self.get_cookies()
             self.id=self.weibo_spider(url)
-            # self.word=0
+            self.fail=False
         except:
             print("模拟失败-。-")
+            self.fail=True
 
 
     def get_cookies(self):
@@ -97,11 +98,13 @@ class visitor():
         content=pattern.search(url).group(1)
         string1=str(self.base62(content[0]))
         string2=str(self.base62(content[1:5]))
-        if(len(string2)==6):
+        while(len(string2)<7):
             string2="0"+string2
         string3=str(self.base62(content[5:]))
+        while (len(string3) < 7):
+            string3 = "0" + string3
+        print(string1,string2,string3)
         id=string1+string2+string3
-
         return id
 
     def catch_comments(self,page=1,past_html=None):
@@ -116,11 +119,18 @@ class visitor():
         S=requests.session()
         S.cookies=self.cookies
         S.headers=self.headers
+        #https://weibo.com/aj/v6/comment/big?ajwvr=6&id=4228711421054898
+        # &root_comment_max_id=259085778882534&root_comment_max_id_type=0&
+        # root_comment_ext_param=&page=2&filter=hot
+        # &sum_comment_number=7215&filter_tips_before=1
+        # &from=singleWeiBo&__rnd=1525703793076
+
         url="https://weibo.com/aj/v6/comment/big?ajwvr=6"\
             +"&id="+str(self.id)\
-            +"&filter=hot"\
-            +"&page="+str(page)
-        # print(url)
+            +"&page="+str(page) \
+            + "&filter=hot" \
+            +"&from=singleWeiBo"
+            # print(url)
         response=S.get(url)
         html=json.loads(response.text)["data"]["html"]
         #如果两次相同表示结束了 -。-
@@ -131,6 +141,7 @@ class visitor():
             return
         #搜索评论
         text=etree.HTML(html)
+        #print(html)
         #评论数-xpath
         # comments=text.xpath('//div[@class="list_li S_line1 clearfix"]//div[@class="WB_text"]//text()')
         comments = text.xpath('//div[@class="list_li S_line1 clearfix"]/*/div[@class="WB_text"]')
@@ -183,8 +194,9 @@ class visitor():
         S.headers = self.headers
         url = "https://weibo.com/aj/v6/comment/big?ajwvr=6" \
               + "&id=" + str(self.id) \
+              + "&page=" + str(page) \
               + "&filter=hot" \
-              + "&page=" + str(page)
+              + "&from=singleWeiBo"
         response = S.get(url)
         html = json.loads(response.text)["data"]["html"]
         # 如果两次相同表示结束了 -。-
@@ -226,14 +238,9 @@ if __name__=="__main__":
     url="https://weibo.com/2387903701/G5bn7s5CS?type=comment"
     url = input("输入需要爬取的微博url:\n")
     spider=visitor(url)
-    spider.catch_comments()
+    if spider.fail==False:
+        spider.catch_comments()
     # spider.catch_pictures()
-#https://weibo.com/1840483562/G48Ajgfhq?type=comment
-#https://weibo.com/aj/v6/comment/big?ajwvr=6&id=4209863153871988&filter=hot&page=1
-
-#https://weibo.com/2387903701/G5bn7s5CS?type=comment
-#https://weibo.com/aj/v6/comment/big?ajwvr=6&id=4212353576694814&filter=hot&page=12
-
 
 #------------------
 #      ~。~   nice
