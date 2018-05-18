@@ -10,9 +10,8 @@ import tensorflow as tf
 #文件路径
 current_path=os.path.abspath(os.curdir)
 data_path="./data"
-happy_file_path="./data//happy.txt"
-angry_file_path="./data//angry.txt"
-unhappy_file_path="./data//unhappy.txt"
+positive_file_path="./data//pos.txt"
+negative_file_path="./data//neg.txt"
 embedding_model_path="./data//embedding_64.bin"
 train_data_path="./data//cnn//training_params.pickle"
 log_path="./summary//cnn"
@@ -20,21 +19,21 @@ log_path="./summary//cnn"
 
 #模型超参
 class config():
-    test_sample_percentage=0.01
-    num_labels=3
+    test_sample_percentage=0.03
+    num_labels=2
     embedding_size=64
-    filter_sizes=[2,3,4,5]
+    filter_sizes=[2,3,4]
     num_filters=128
     dropout_keep_prob=0.5
-    l2_reg_lambda=0.5
-    batch_size=128
+    l2_reg_lambda=0.1
+    batch_size=32
     num_epochs=15
     max_sentences_length=0
     lr_rate=1e-3
 
 
 #加载数据
-all_sample_lists,all_label_arrays,max_sentences_length=readdata.get_all_data_from_file(happy_file_path,angry_file_path,unhappy_file_path,force_len=40)
+all_sample_lists,all_label_arrays,max_sentences_length=readdata.get_all_data_from_file(positive_file_path,negative_file_path,force_len=40)
 all_sample_arrays=np.array(word2vec.get_embedding_vector(all_sample_lists,embedding_model_path))
 del all_sample_lists
 print("sample.shape = {}".format(all_sample_arrays.shape))
@@ -119,7 +118,7 @@ with tf.Graph().as_default():
             step_num += 1
             x_batch,y_batch=zip(*batch)
             summary,loss, accuracy=train_step(x_batch,y_batch,config.lr_rate)
-            if step_num % 100 == 0:
+            if step_num % 20 == 0:
                 train_writer.add_summary(summary,step_num)
                 #print("For train_samples: step %d, loss %g, accuracy %g" % (step_num,loss,accuracy))
                 summary,loss, accuracy = test_step(test_sample_arrays, test_label_arrays)

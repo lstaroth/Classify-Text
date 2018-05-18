@@ -22,7 +22,9 @@ if __name__=="__main__":
         prediction=get_lstm_result()
     elif model_index == 3:
         prediction=get_mixed_result()
+        prediction=[i for i in prediction[0]]
     else:
         print("输入信息错误")
     #移交可视化模块完成数据视化
+    print(prediction)
     show_emtion(prediction)

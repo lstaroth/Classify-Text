@@ -11,14 +11,14 @@ train_data_path="./data//cnn//training_params.pickle"
 embedding_model_path="./data//embedding_64.bin"
 
 class config():
-    test_sample_percentage=0.01
-    num_labels=3
+    test_sample_percentage=0.03
+    num_labels=2
     embedding_size=64
-    filter_sizes=[2,3,4,5]
+    filter_sizes=[2,3,4]
     num_filters=128
-    dropout_keep_prob=0.5
-    l2_reg_lambda=0.5
-    batch_size=128
+    dropout_keep_prob=1
+    l2_reg_lambda=0.1
+    batch_size=32
     num_epochs=15
     max_sentences_length=0
     lr_rate=1e-3
@@ -46,7 +46,7 @@ def get_cnn_result():
 
     #加载参数
     saver = tf.train.Saver()
-    saver.restore(sess, "data/cnn/text_model")
+    saver.restore(sess, "./data/cnn/text_model")
 
     #定义测试函数
     def test_step(x_batch):

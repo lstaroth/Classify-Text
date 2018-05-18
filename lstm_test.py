@@ -16,14 +16,14 @@ train_data_path="./data//lstm//training_params.pickle"
 
 #模型超参
 class config():
-    test_sample_percentage=0.01
-    num_labels=3
+    test_sample_percentage=0.03
+    num_labels=2
     embedding_size=64
-    dropout_keep_prob=0.9
-    batch_size=128
-    num_epochs=20
-    max_sentences_length=25
-    num_layers=3
+    dropout_keep_prob=1
+    batch_size=64
+    num_epochs=80
+    max_sentences_length=40
+    num_layers=2
     max_grad_norm=5
     l2_rate=0.0001
 
@@ -51,7 +51,7 @@ def get_lstm_result():
     lstm=lstm_model.TextLSTM(config=testconfig)
 
     saver = tf.train.Saver()
-    saver.restore(sess, "data/lstm/text_model")
+    saver.restore(sess, "./data/lstm/text_model")
 
     #定义测试函数
     def test_step(x_batch):
