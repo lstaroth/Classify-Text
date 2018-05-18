@@ -240,4 +240,12 @@ if __name__=="__main__":
     spider=visitor(url)
     if spider.fail==False:
         spider.catch_comments()
+<<<<<<< HEAD
     # spider.catch_pictures()
+=======
+    # spider.catch_pictures()
+
+#------------------
+#      ~。~   nice
+#------------------
+>>>>>>> 06b44860ba75492beb842e51b5b0af857dbfdbb3
