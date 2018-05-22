@@ -266,6 +266,9 @@ if __name__=="__main__":
     spider=visitor(url)
     if spider.fail==False:
         spider.catch_comments()
+<<<<<<< HEAD
+    # spider.catch_pictures()
+=======
     # spider.catch_pictures()
 #https://weibo.com/1840483562/G48Ajgfhq?type=comment
 #https://weibo.com/aj/v6/comment/big?ajwvr=6&id=4209863153871988&filter=hot&page=1
@@ -277,3 +280,4 @@ if __name__=="__main__":
 #------------------
 #      ~。~   nice
 #------------------
+>>>>>>> 06b44860ba75492beb842e51b5b0af857dbfdbb3

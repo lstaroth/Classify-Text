@@ -18,26 +18,26 @@ cnn_train_data_path="./data//cnn//training_params.pickle"
 
 #模型超参
 class lstmconfig():
-    test_sample_percentage=0.01
-    num_labels=3
+    test_sample_percentage=0.03
+    num_labels=2
     embedding_size=64
-    dropout_keep_prob=0.9
-    batch_size=128
-    num_epochs=20
-    max_sentences_length=25
-    num_layers=3
+    dropout_keep_prob=1
+    batch_size=64
+    num_epochs=80
+    max_sentences_length=40
+    num_layers=2
     max_grad_norm=5
     l2_rate=0.0001
 
 class cnnconfig():
-    test_sample_percentage=0.01
-    num_labels=3
+    test_sample_percentage=0.03
+    num_labels=2
     embedding_size=64
-    filter_sizes=[2,3,4,5]
+    filter_sizes=[2,3,4]
     num_filters=128
-    dropout_keep_prob=0.5
-    l2_reg_lambda=0.5
-    batch_size=128
+    dropout_keep_prob=1
+    l2_reg_lambda=0.1
+    batch_size=32
     num_epochs=15
     max_sentences_length=0
     lr_rate=1e-3
@@ -81,7 +81,7 @@ def get_mixed_result():
         with lstm_graph.as_default():
             lstm = lstm_model.TextLSTM(config=lstm_config)
             lstm_saver = tf.train.Saver()
-            lstm_saver.restore(lstm_sess, "data/lstm/text_model")
+            lstm_saver.restore(lstm_sess, "./data/lstm/text_model")
             def lstm_test_step(x_batch):
                 feed_dict={
                     lstm.input_x:x_batch,
@@ -101,7 +101,7 @@ def get_mixed_result():
         with cnn_graph.as_default():
             cnn = cnn_model.TextCNN(config=cnn_config)
             cnn_saver = tf.train.Saver()
-            cnn_saver.restore(cnn_sess, "data/cnn/text_model")
+            cnn_saver.restore(cnn_sess, "./data/cnn/text_model")
             def cnn_test_step(x_batch):
                 feed_dict={
                     cnn.input_x:x_batch,
@@ -121,5 +121,3 @@ def get_mixed_result():
     mixed_scores=np.sum([lstm_scores,cnn_scores],axis=0)
     predictions=np.argmax(mixed_scores,axis=2)
     return np.array(predictions)
-    #print(predictions)
-    #print(mixed_scores)

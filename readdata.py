@@ -64,25 +64,22 @@ def padding_sentences(no_padding_lists, padding_token='<PADDING>',padding_senten
     return (all_sample_lists,max_sentence_length)
 
 
-def get_all_data_from_file(happy_file_path,angry_file_path,unhappy_file_path,force_len=None):
+def get_all_data_from_file(positive_file_path,negative_file_path,force_len=None):
     '''
     positive_file_path:正评价txt全路径
     negative_file_path:负评价txt全路径
     '''
-    happy_sample_lists=get_cleaned_list(happy_file_path)
-    angry_sample_lists=get_cleaned_list(angry_file_path)
-    unhappy_sample_lists=get_cleaned_list(unhappy_file_path)
-    happy_label_lists=[[1,0,0] for _ in happy_sample_lists]
-    angry_label_lists=[[0,1,0] for _ in angry_sample_lists]
-    unhappy_label_lists=[[0,0,1] for _ in unhappy_sample_lists]
+    positive_sample_lists=get_cleaned_list(positive_file_path)
+    negative_sample_lists=get_cleaned_list(negative_file_path)
+    positive_label_lists=[[0,1] for _ in positive_sample_lists]
+    negative_label_lists=[[1,0] for _ in negative_sample_lists]
 
-
-    all_sample_lists=happy_sample_lists + angry_sample_lists+unhappy_sample_lists  #样本为list类型！！
+    all_sample_lists = positive_sample_lists + negative_sample_lists #样本为list类型！！
     if force_len == None:
         all_sample_lists, max_sentences_length = padding_sentences(all_sample_lists)  #样本为list类型！！
     else:
         all_sample_lists, max_sentences_length = padding_sentences(all_sample_lists,padding_token='<PADDING>',padding_sentence_length = force_len)  # 样本为list类型！！
-    all_label_arrays=np.concatenate([happy_label_lists,angry_label_lists,unhappy_label_lists], 0)  #标签为array类型
+    all_label_arrays=np.concatenate([positive_label_lists,negative_label_lists], 0)  #标签为array类型
 
     return (all_sample_lists,all_label_arrays,max_sentences_length)
 
