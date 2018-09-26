@@ -22,7 +22,7 @@ LSTM层与层之间进行dropout
 项目使用的词向量：embedding_64.bin(1.5G)  
 训练语料：百度百科800w条 20G+搜狐新闻400w条 12G+小说：90G左右  
 模型参数：window=5 min_count=5 size=64  
-下载链接：[百度网盘链接](https://pan.baidu.com/s/1o7MWrnc)      密码:wzqv
+下载链接：[百度网盘链接](https://pan.baidu.com/s/19bDbZsFzLggx7q9iFn83Nw)
 
 
 ## 文件功能介绍
