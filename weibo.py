@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/3/1 19:54
-# @Author  : 孑曦曦孑
+# @Author  : 孑曦曦孑 
 # @File    : visitor_weibo_login.py
 
 import requests
